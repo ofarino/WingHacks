@@ -9,7 +9,7 @@
     href="https://fonts.googleapis.com/css2?family=EG+Garamond:wght@400;500;600;700&family=Fira+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     <title>Pomodoro App</title>
     <title>Study Session | Pomodoro Timer</title>
   </head>
@@ -31,5 +31,5 @@
         </div>
     </div>
   </body>
-  <script src="./app.js"></script>
+  <script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>
 </html>

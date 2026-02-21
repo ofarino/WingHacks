@@ -1,0 +1,120 @@
+/* 1. General Page Layout */
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    padding: 20px; 
+    background-color: #f0f2f5; 
+    color: #333;
+    display: flex;
+    justify-content: center;
+}
+
+.container { 
+    width: 100%;
+    max-width: 600px; 
+    background: white; 
+    padding: 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1, h3 { 
+    text-align: center; 
+    color: #2c3e50; 
+    margin-top: 0;
+}
+
+/* 2. Input Section Styling */
+#input-section { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    margin-bottom: 25px;
+}
+
+input, select, button { 
+    padding: 12px; 
+    border-radius: 6px; 
+    border: 1px solid #ddd; 
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.2);
+}
+
+button#add-task-btn { 
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button#add-task-btn:hover { 
+    background-color: #0056b3; 
+}
+
+/* 3. The Task Box (The "Dock") */
+#footer-task-dock {
+    margin-top: 20px;
+    border: 2px solid #2c3e50;
+    background: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 350px; 
+    overflow-y: auto;  /* Scrollbar if list is long */
+}
+
+/* 4. Individual Task Items */
+.task-item {
+    padding: 12px;
+    margin: 8px 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.1s;
+}
+
+/* Visual feedback for dragging */
+.task-item:active { 
+    cursor: grabbing; 
+}
+
+.dragging { 
+    opacity: 0.5; 
+    border: 2px dashed #007bff; 
+    background: #eef6ff;
+    transform: scale(0.98);
+}
+
+/* 5. Navigation & Utility */
+.nav-section { 
+    margin-top: 25px; 
+}
+
+.next-btn { 
+    background-color: #28a745; 
+    color: white; 
+    width: 100%; 
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.next-btn:hover { 
+    background-color: #218838; 
+}
+
+#empty-msg { 
+    text-align: center; 
+    color: #888; 
+    font-style: italic; 
+}

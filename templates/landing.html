@@ -16,6 +16,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            font-family: Arial, sans-serif;
         }
 
         #bg-video {
@@ -35,10 +36,44 @@
             position: relative;
             z-index: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             color: white;
+            text-align: center;
+        }
+
+        .content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background-color: rgba(76, 175, 80, 0.9);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-btn:hover {
+            background-color: rgba(56, 142, 60, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
@@ -48,7 +83,9 @@
     </video>
 
     <div class="content">
-        <p>Start Studying!</p>
+        <h1>eyeCuStudy</h1>
+        <p>Your smart study companion with focus tracking</p>
+        <a href="{{ url_for('tasks') }}" class="start-btn">Start Studying</a>
     </div>
 </body>
 </html>

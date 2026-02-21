@@ -119,5 +119,5 @@ function goToNextPage() {
     }
     // Save the final order (including manual drags) to localStorage
     localStorage.setItem('studyTasks', JSON.stringify(tasks));
-    window.location.href = 'next-page.html';
+    window.location.href = '/pomodoro';
 }

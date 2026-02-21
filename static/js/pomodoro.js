@@ -1,21 +1,59 @@
 const bells = new Audio("./sounds/bell.wav");
-const startBtn = document.querySelector(".btn-start");
-const stopBtn = document.querySelector(".btn-stop");
+const toggleBtn = document.querySelector(".btn-toggle");
 const session = document.querySelector(".minutes");
+const currentTaskText = document.querySelector(".current-task-text");
 let myInterval;
-let state = true;
+let isRunning = false;
 let totalSeconds = 0;
+let tasks = [];
+let currentTaskIndex = 0;
 
-const appTimer = () => {
-  const sessionAmount = Number.parseInt(session.textContent);
+// Load tasks from localStorage and display current task
+function loadTasks() {
+  const savedTasks = localStorage.getItem('studyTasks');
+  if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+    displayCurrentTask();
+  } else {
+    currentTaskText.textContent = "Current task: No tasks available";
+  }
+}
 
-  if (state) {
-    state = false;
-    totalSeconds = sessionAmount * 60;
+function displayCurrentTask() {
+  if (tasks.length > 0 && currentTaskIndex < tasks.length) {
+    const task = tasks[currentTaskIndex];
+    currentTaskText.textContent = `Current task: ${task.name}`;
+  } else {
+    currentTaskText.textContent = "Current task: All tasks completed!";
+  }
+}
 
+function moveToNextTask() {
+  currentTaskIndex++;
+  tasks.shift(); // Remove the completed task
+  localStorage.setItem('studyTasks', JSON.stringify(tasks));
+  displayCurrentTask();
+}
+
+const toggleTimer = () => {
+  if (!isRunning) {
+    // Start the timer
+    isRunning = true;
+    toggleBtn.textContent = "⏸";
+    toggleBtn.classList.add("running");
+    
+    if (totalSeconds === 0) {
+      const sessionAmount = Number.parseInt(session.textContent);
+      totalSeconds = sessionAmount * 60;
+    }
+    
     myInterval = setInterval(updateSeconds, 1000);
   } else {
-    alert("Session has already started.");
+    // Pause the timer
+    isRunning = false;
+    toggleBtn.textContent = "▶";
+    toggleBtn.classList.remove("running");
+    clearInterval(myInterval);
   }
 };
 
@@ -38,11 +76,16 @@ const updateSeconds = () => {
   if (minutesLeft === 0 && secondsLeft === 0) {
     bells.play();
     clearInterval(myInterval);
+    isRunning = false;
+    toggleBtn.textContent = "▶";
+    toggleBtn.classList.remove("running");
+    
+    // Move to next task when timer completes
+    moveToNextTask();
   }
 };
 
-startBtn.addEventListener("click", appTimer);
-stopBtn.addEventListener("click", () => {
-  clearInterval(myInterval);
-  state = true;
-});
+toggleBtn.addEventListener("click", toggleTimer);
+
+// Load tasks when page loads
+loadTasks();

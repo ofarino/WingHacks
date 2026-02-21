@@ -54,7 +54,7 @@ http://localhost:5001
 
 ## ✨ Features
 
-- ⏱️ **Pomodoro Timer** - 25-minute focused study sessions with break tracking
+- ⏱️ **Pomodoro Timer** - Focused study sessions with break tracking
 - 📝 **Task Management** - Keep track of your study goals and to-do list
 - 👁️ **Eye Tracking** - Real-time monitoring using your webcam (local processing only!)
 - ⚠️ **Smart Alerts** - Gentle notification when eyes closed for 10+ seconds

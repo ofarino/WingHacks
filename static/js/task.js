@@ -7,15 +7,15 @@ function addTask() {
     const nameInput = document.getElementById('taskName');
     const dateInput = document.getElementById('dueDate');
     const topicInput = document.getElementById('topic');
-    const timeInput = parseInt(document.getElementById('expectedTime'));
+    const timeInput = document.getElementById('expectedTime');
 
     const name = nameInput.value;
     const date = dateInput.value;
     const topic = topicInput.value;
-    const time = parseInt(timeInput);
+    const time = parseInt(timeInput.value);
 
     // Validation
-    if (!name || !date) {
+    if (!name || !date || isNaN(time)) {
         alert("Please fill in all fields correctly.");
         return;
     }
@@ -38,7 +38,7 @@ function addTask() {
     // Clear inputs for the next entry
     nameInput.value = '';
     dateInput.value = '';
-    timeInput = '';
+
 }
 
 /**

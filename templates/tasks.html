@@ -3,9 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Study Task Planner</title>
 </head>
 <body>
-    <script src="/static/script.js"></script>
+    <div class="container">
+        <h1>Study Task Tracker</h1>
+        
+        <div id="input-section">
+            <input type="text" id="taskName" placeholder="Task Name (e.g., Calculus Quiz)">
+            <input type="date" id="dueDate">
+            <select id="topic">
+                <option value="Math">Math</option>
+                <option value="Science">Science</option>
+                <option value="Reading">Reading</option>
+                <option value="Writing">Writing</option>
+                <option value="History">History</option>
+                <option value="Coding">Coding</option>
+                <option value="Art">Art</option>
+            </select>
+            <select id="expectedTime">
+                <option value="" disabled selected>Time to complete...</option>
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="120">2 hours</option>
+                <option value="180">3+ hours</option>
+            </select>
+            <button id="add-task-btn" onclick="addTask()">Add Task to Schedule</button>
+        </div>
+
+        <hr>
+
+        <div id="footer-task-dock">
+            <h3>Your Sorted Schedule</h3>
+            <div id="taskList">
+                <p id="empty-msg">Tasks will appear here sorted by date and time. Drag to reorder manually.</p>
+            </div>
+        </div>
+        <div class="nav-section">
+            <button class="next-btn" onclick="goToNextPage()">Proceed to Study Session</button>
+        </div>
+    </div>
+
+<script src="/static/js/task.js"></script>
 </body>
 </html>

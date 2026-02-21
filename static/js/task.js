@@ -1,9 +1,21 @@
+window.onload = function() {
+    const dateInput = document.getElementById('dueDate');
+    const today = new Date();
+
+    const yyyy = today.getFullYear();
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    let dd = String(today.getDate()).padStart(2, '0');
+
+    const formattedDate = yyyy + '-' + mm + '-' + dd;
+    dateInput.setAttribute('min', formattedDate);
+};
 let tasks = [];
 
 /**
  * 1. Capture user input, add to the array, and sort.
  */
 function addTask() {
+
     const nameInput = document.getElementById('taskName');
     const dateInput = document.getElementById('dueDate');
     const topicInput = document.getElementById('topic');
@@ -13,6 +25,12 @@ function addTask() {
     const date = dateInput.value;
     const topic = topicInput.value;
     const time = parseInt(timeInput.value);
+    const todayString = new Date().toISOString().split('T')[0];
+
+    if (date < todayString) {
+        alert("Due date cannot be in the past.");
+        return;
+    }
 
     // Validation
     if (!name || !date || isNaN(time)) {

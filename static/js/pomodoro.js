@@ -1,5 +1,6 @@
 const bells = new Audio("./sounds/bell.wav");
 const startBtn = document.querySelector(".btn-start");
+const stopBtn = document.querySelector(".btn-stop");
 const session = document.querySelector(".minutes");
 let myInterval;
 let state = true;
@@ -41,3 +42,7 @@ const updateSeconds = () => {
 };
 
 startBtn.addEventListener("click", appTimer);
+stopBtn.addEventListener("click", () => {
+  clearInterval(myInterval);
+  state = true;
+});

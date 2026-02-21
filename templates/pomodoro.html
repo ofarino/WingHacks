@@ -38,6 +38,10 @@
         <h2>Edit Timer Settings</h2>
         <p style="text-align: center; color: #666; margin-bottom: 20px;">Choose your preferred study/break split:</p>
         <div class="timer-options">
+          <button class="timer-option" data-timer="1-0.25" onclick="changeTimer('1-0.25')">
+            <strong>Test Timer</strong>
+            <span>1 min Work / 15 sec Break</span>
+          </button>
           <button class="timer-option" data-timer="25-5" onclick="changeTimer('25-5')">
             <strong>Classic Pomodoro</strong>
             <span>25 min Work / 5 min Break</span>
@@ -60,6 +64,7 @@
 
     <div class="app-container">
         <div class="app-circle">
+            <p class="session-mode" style="text-align: center; font-size: 1.3rem; margin: 0 0 20px 0; color: #2c3e50; font-weight: bold;">Work Time</p>
             <div class="circle-shape">
             <div class="semi-circle right-side circle-mask"></div>
             <div class="semi-circle right-side circle"></div>

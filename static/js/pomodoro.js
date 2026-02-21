@@ -7,14 +7,15 @@ let myInterval;
 let isRunning = false;
 let totalSeconds = 0;
 let tasks = [];
+let isBreakTime = false;
 
 // Load timer settings and update display
 function loadTimerSettings() {
   const timerSettings = localStorage.getItem('timerSettings');
   if (timerSettings) {
     // Parse the work duration from the split (e.g., "25-5" -> 25)
-    const workDuration = parseInt(timerSettings.split('-')[0]);
-    session.textContent = workDuration;
+    const workDuration = parseFloat(timerSettings.split('-')[0]);
+    session.textContent = Math.floor(workDuration);
   }
 }
 
@@ -38,8 +39,8 @@ function displayCurrentTask() {
     const task = tasks[0];
     currentTaskText.textContent = `Current task: ${task.name}`;
     
-    // Show checkbox and reset it
-    if (taskCompleteBox) {
+    // Show checkbox only during work time (not during break)
+    if (taskCompleteBox && !isBreakTime) {
       taskCompleteBox.style.display = 'block';
       if (taskCheckbox) {
         taskCheckbox.checked = false;
@@ -72,14 +73,20 @@ const toggleTimer = () => {
     toggleBtn.classList.add("running");
     
     if (totalSeconds === 0) {
-      const sessionAmount = Number.parseInt(session.textContent);
-      totalSeconds = sessionAmount * 60;
+      // Calculate total seconds from both minutes and seconds display
+      const minuteDiv = document.querySelector(".minutes");
+      const secondDiv = document.querySelector(".seconds");
+      const displayMinutes = parseInt(minuteDiv.textContent);
+      const displaySeconds = parseInt(secondDiv.textContent);
+      totalSeconds = (displayMinutes * 60) + displaySeconds;
     }
     
     myInterval = setInterval(updateSeconds, 1000);
     
-    // Start eye tracking when timer starts
-    startEyeTracking();
+    // Start eye tracking when timer starts (only during work time)
+    if (!isBreakTime) {
+      startEyeTracking();
+    }
   } else {
     // Pause the timer
     isRunning = false;
@@ -111,14 +118,61 @@ const updateSeconds = () => {
     isRunning = false;
     toggleBtn.textContent = "▶";
     toggleBtn.classList.remove("running");
+    totalSeconds = 0;
     
-    // Stop eye tracking when timer ends
-    stopEyeTracking();
-    
-    // Move to next task when timer completes
-    moveToNextTask();
+    if (isBreakTime) {
+      // Break finished - switch back to work time (keep same task)
+      isBreakTime = false;
+      updateSessionMode();
+      
+      // Reset to work duration
+      const timerSettings = localStorage.getItem('timerSettings') || '25-5';
+      const workDuration = parseFloat(timerSettings.split('-')[0]);
+      session.textContent = Math.floor(workDuration);
+      document.querySelector('.seconds').textContent = '00';
+    } else {
+      // Work session finished - stop eye tracking and start break
+      stopEyeTracking();
+      isBreakTime = true;
+      updateSessionMode();
+      
+      // Set break duration
+      const timerSettings = localStorage.getItem('timerSettings') || '25-5';
+      const breakDuration = parseFloat(timerSettings.split('-')[1]);
+      const breakMinutes = Math.floor(breakDuration);
+      const breakSeconds = Math.round((breakDuration - breakMinutes) * 60);
+      
+      session.textContent = breakMinutes;
+      document.querySelector('.seconds').textContent = breakSeconds < 10 ? '0' + breakSeconds : breakSeconds;
+      
+      // Auto-start break timer
+      setTimeout(() => {
+        toggleTimer();
+      }, 1000);
+    }
   }
 };
+
+function updateSessionMode() {
+  const sessionModeElement = document.querySelector('.session-mode');
+  const taskCompleteBox = document.querySelector('.task-complete-box');
+  
+  if (isBreakTime) {
+    sessionModeElement.textContent = 'Break Time';
+    sessionModeElement.style.color = '#2c3e50';
+    // Hide task checkbox during break
+    if (taskCompleteBox) {
+      taskCompleteBox.style.display = 'none';
+    }
+  } else {
+    sessionModeElement.textContent = 'Work Time';
+    sessionModeElement.style.color = '#2c3e50';
+    // Show task checkbox during work (if tasks exist)
+    if (taskCompleteBox && tasks.length > 0) {
+      taskCompleteBox.style.display = 'block';
+    }
+  }
+}
 
 toggleBtn.addEventListener("click", toggleTimer);
 
@@ -287,10 +341,12 @@ function changeTimer(timerValue) {
     
     // Update the display if timer is not running
     if (!isRunning) {
-        const workDuration = parseInt(timerValue.split('-')[0]);
-        session.textContent = workDuration;
+        const workDuration = parseFloat(timerValue.split('-')[0]);
+        session.textContent = Math.floor(workDuration);
         document.querySelector('.seconds').textContent = '00';
         totalSeconds = 0; // Reset timer
+        isBreakTime = false; // Reset to work mode
+        updateSessionMode(); // Update UI
     }
     
     // Update active state

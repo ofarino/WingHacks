@@ -118,3 +118,71 @@ button#add-task-btn:hover {
     color: #888; 
     font-style: italic; 
 }
+
+/* Pomodoro Timer Styles */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.app-container h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.app-message {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.app-counter-box {
+    margin: 40px 0;
+}
+
+.app-counter-box p {
+    font-size: 8rem;
+    font-weight: bold;
+    margin: 0;
+    color: #2c3e50;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-start, .btn-stop {
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-start {
+    background-color: #28a745;
+}
+
+.btn-start:hover {
+    background-color: #218838;
+}
+
+.btn-stop {
+    background-color: #dc3545;
+}
+
+.btn-stop:hover {
+    background-color: #c82333;
+}

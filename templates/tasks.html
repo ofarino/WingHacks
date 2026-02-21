@@ -6,12 +6,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Study Task Planner</title>
     <style>
-        body {
-            background-image: url("{{ url_for('static', filename='backgrounds/bookshelf_background.png') }}");
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='backgrounds/bookshelf.png') }}");
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
             background-repeat: no-repeat;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            z-index: -1;
         }
     </style>
 </head>

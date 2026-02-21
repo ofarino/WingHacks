@@ -112,12 +112,18 @@ function deleteTask(index) {
     renderTasks();
 }
 
+
 function goToNextPage() {
     if (tasks.length === 0) {
         alert("Add at least one task before proceeding!");
         return;
     }
+
+    const timerSplitElement = document.getElementById('timerSplit');
+    const selectedSplit = timerSplitElement ? timerSplitElement.value : "25-5";
+
     // Save the final order (including manual drags) to localStorage
     localStorage.setItem('studyTasks', JSON.stringify(tasks));
+    localStorage.setItem('timerSettings', selectedSplit);
     window.location.href = '/pomodoro';
 }

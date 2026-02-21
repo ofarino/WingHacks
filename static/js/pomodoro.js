@@ -254,3 +254,64 @@ async function stopEyeTracking() {
 
 // Also stop when user leaves page
 window.addEventListener('beforeunload', stopEyeTracking);
+
+// Vibe menu functionality (placeholder for future implementation)
+function toggleVibeMenu() {
+    alert('Vibe customization coming soon! 🎨\n\nFuture features:\n- Background themes\n- Ambient sounds\n- Color schemes');
+}
+
+// Timer modal functions
+function openTimerModal() {
+    const modal = document.getElementById('timerModal');
+    modal.classList.add('active');
+    
+    // Highlight the currently selected timer
+    const currentSettings = localStorage.getItem('timerSettings') || '25-5';
+    document.querySelectorAll('.timer-option').forEach(option => {
+        if (option.dataset.timer === currentSettings) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+}
+
+function closeTimerModal() {
+    const modal = document.getElementById('timerModal');
+    modal.classList.remove('active');
+}
+
+function changeTimer(timerValue) {
+    // Save the new timer setting
+    localStorage.setItem('timerSettings', timerValue);
+    
+    // Update the display if timer is not running
+    if (!isRunning) {
+        const workDuration = parseInt(timerValue.split('-')[0]);
+        session.textContent = workDuration;
+        document.querySelector('.seconds').textContent = '00';
+        totalSeconds = 0; // Reset timer
+    }
+    
+    // Update active state
+    document.querySelectorAll('.timer-option').forEach(option => {
+        if (option.dataset.timer === timerValue) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+    
+    // Close modal after a short delay for visual feedback
+    setTimeout(() => {
+        closeTimerModal();
+    }, 400);
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('timerModal');
+    if (event.target === modal) {
+        closeTimerModal();
+    }
+});

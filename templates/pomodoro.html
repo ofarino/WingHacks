@@ -14,6 +14,50 @@
     <title>Study Session | Pomodoro Timer</title>
   </head>
   <body>
+    <nav class="pomodoro-navbar">
+      <div class="navbar-content">
+        <button class="nav-btn" onclick="openTimerModal()" title="Edit timer settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Edit Timer</span>
+        </button>
+        <button class="nav-btn" onclick="toggleVibeMenu()" title="Change background vibe">
+          <span class="nav-icon">🎨</span>
+          <span class="nav-label">Change Vibe</span>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='/tasks'" title="Recraft your assignments">
+          <span class="nav-icon">📝</span>
+          <span class="nav-label">Recraft Tasks</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Timer Edit Modal -->
+    <div id="timerModal" class="modal-overlay">
+      <div class="timer-modal">
+        <button class="modal-close" onclick="closeTimerModal()">&times;</button>
+        <h2>Edit Timer Settings</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">Choose your preferred study/break split:</p>
+        <div class="timer-options">
+          <button class="timer-option" data-timer="25-5" onclick="changeTimer('25-5')">
+            <strong>Classic Pomodoro</strong>
+            <span>25 min Work / 5 min Break</span>
+          </button>
+          <button class="timer-option" data-timer="45-15" onclick="changeTimer('45-15')">
+            <strong>Flexible</strong>
+            <span>45 min Work / 15 min Break</span>
+          </button>
+          <button class="timer-option" data-timer="50-10" onclick="changeTimer('50-10')">
+            <strong>Deep Learning</strong>
+            <span>50 min Work / 10 min Break</span>
+          </button>
+          <button class="timer-option" data-timer="90-30" onclick="changeTimer('90-30')">
+            <strong>Ultradian Rhythm</strong>
+            <span>90 min Work / 30 min Break</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="app-container">
         <div class="app-circle">
             <div class="circle-shape">

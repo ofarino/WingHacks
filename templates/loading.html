@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Loading...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-image: url("{{ url_for('static', filename='backgrounds/grass.jpeg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        #loading-text {
+            position: absolute;
+            top: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Blockblueprint', Arial, sans-serif;
+            font-size: 3rem;
+            color: #3b2a1a;
+            text-shadow: 2px 2px 0px #a07850;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        #loading-video {
+            position: absolute;
+            top: 59%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
+            height: auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            mix-blend-mode: multiply;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-text">Crafting your schedule...</div>
+
+    <video id="loading-video" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='backgrounds/MinecartLoading.mp4') }}" type="video/mp4">
+    </video>
+
+    <script>
+        const video = document.getElementById('loading-video');
+        let plays = 0;
+        video.addEventListener('ended', () => {
+            plays++;
+            if (plays < 2) {
+                video.play();
+            } else {
+                window.location.href = '/pomodoro';
+            }
+        });
+        video.addEventListener('error', () => {
+            window.location.href = '/pomodoro';
+        });
+    </script>
+</body>
+</html>

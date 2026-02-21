@@ -54,6 +54,11 @@ def tasks():
     """Task management page"""
     return render_template('tasks.html')
 
+@app.route('/loading')
+def loading():
+    """Loading screen between tasks and pomodoro"""
+    return render_template('loading.html')
+
 # API Routes for task management
 @app.route('/api/tasks', methods=['GET', 'POST'])
 def api_tasks():

@@ -100,6 +100,17 @@ def start_eye_tracking():
             'success': True,
             'message': 'Eye tracking started'
         })
+    except RuntimeError as e:
+        error_msg = str(e)
+        if 'camera' in error_msg.lower():
+            return jsonify({
+                'success': False,
+                'error': 'Failed to open camera. Please grant camera permissions in System Preferences.'
+            }), 500
+        return jsonify({
+            'success': False,
+            'error': error_msg
+        }), 500
     except Exception as e:
         return jsonify({
             'success': False,
@@ -141,6 +152,9 @@ def eye_tracking_status():
         status = stream.get_status()
         return jsonify(status)
     except Exception as e:
+        import traceback
+        print(f"Error in eye_tracking_status: {e}")
+        print(traceback.format_exc())
         return jsonify({
             'success': False,
             'error': str(e)

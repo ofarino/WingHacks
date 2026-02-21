@@ -23,6 +23,10 @@ class VideoStream:
         Args:
             camera_id: Camera device ID (default: 0)
         """
+        import os
+        # Set environment variable to skip OpenCV auth request
+        os.environ['OPENCV_AVFOUNDATION_SKIP_AUTH'] = '1'
+        
         self.camera_id = camera_id
         self.capture = None
         self.frame = None
@@ -108,8 +112,8 @@ class VideoStream:
         duration = self.eye_tracker.update_closed_duration(eyes_closed)
         self.eyes_closed_duration = duration
         
-        # Check if alert should be triggered (15 second threshold)
-        should_alert = self.eye_tracker.check_alert_threshold(duration, threshold=15.0)
+        # Check if alert should be triggered (10 second threshold)
+        should_alert = self.eye_tracker.check_alert_threshold(duration, threshold=10.0)
         
         # Trigger alert only once per closure event
         if should_alert and not self.alert_triggered:
@@ -119,11 +123,11 @@ class VideoStream:
         
         return {
             'success': True,
-            'eyes_closed': eyes_closed,
-            'duration': round(duration, 2),
-            'left_ear': round(left_ear, 3),
-            'right_ear': round(right_ear, 3),
-            'alert_triggered': self.alert_triggered
+            'eyes_closed': bool(eyes_closed),  # Convert to Python bool
+            'duration': float(round(duration, 2)),  # Convert to Python float
+            'left_ear': float(round(left_ear, 3)),  # Convert to Python float
+            'right_ear': float(round(right_ear, 3)),  # Convert to Python float
+            'alert_triggered': bool(self.alert_triggered)  # Convert to Python bool
         }
     
     def process_frame_for_presence(self) -> dict:
@@ -150,9 +154,9 @@ class VideoStream:
         
         return {
             'success': True,
-            'present': is_present,
-            'confidence': round(confidence, 3) if confidence else None,
-            'time_since_last_detection': round(time_since_last, 2) if time_since_last else None
+            'present': bool(is_present),  # Convert to Python bool
+            'confidence': float(round(confidence, 3)) if confidence else None,  # Convert to Python float
+            'time_since_last_detection': float(round(time_since_last, 2)) if time_since_last else None  # Convert to Python float
         }
     
     def get_status(self) -> dict:
@@ -162,8 +166,27 @@ class VideoStream:
         Returns:
             Dictionary with all tracking information
         """
-        eye_data = self.process_frame_for_eyes()
-        presence_data = self.process_frame_for_presence()
+        try:
+            eye_data = self.process_frame_for_eyes()
+        except Exception as e:
+            print(f"Error in process_frame_for_eyes: {e}")
+            import traceback
+            traceback.print_exc()
+            eye_data = {
+                'success': False,
+                'error': str(e)
+            }
+        
+        try:
+            presence_data = self.process_frame_for_presence()
+        except Exception as e:
+            print(f"Error in process_frame_for_presence: {e}")
+            import traceback
+            traceback.print_exc()
+            presence_data = {
+                'success': False,
+                'error': str(e)
+            }
         
         return {
             'camera_active': self.is_running,

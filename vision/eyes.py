@@ -1,10 +1,12 @@
 """
-Eye tracking module using MediaPipe Face Mesh
+Eye tracking module using MediaPipe Face Landmarker
 Detects eye closure and tracks duration
 """
 
 import cv2
-import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+from mediapipe import Image as MPImage, ImageFormat
 import time
 from typing import Tuple, Optional
 import numpy as np
@@ -12,7 +14,7 @@ import numpy as np
 
 class EyeTracker:
     """
-    Tracks eyes using MediaPipe Face Mesh to detect when eyes are closed
+    Tracks eyes using MediaPipe Face Landmarker to detect when eyes are closed
     """
     
     # Eye landmarks for MediaPipe Face Mesh
@@ -23,14 +25,30 @@ class EyeTracker:
     EAR_THRESHOLD = 0.21
     
     def __init__(self):
-        """Initialize MediaPipe Face Mesh"""
-        self.mp_face_mesh = mp.solutions.face_mesh
-        self.face_mesh = self.mp_face_mesh.FaceMesh(
-            max_num_faces=1,
-            refine_landmarks=True,
-            min_detection_confidence=0.5,
+        """Initialize MediaPipe Face Landmarker"""
+        # Get model path
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_dir, 'models', 'face_landmarker.task')
+        
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(
+                f"Face landmarker model not found at {model_path}\n"
+                "Please run: python setup_models.py"
+            )
+        
+        # Create Face Landmarker options
+        base_options = python.BaseOptions(model_asset_path=model_path)
+        options = vision.FaceLandmarkerOptions(
+            base_options=base_options,
+            running_mode=vision.RunningMode.IMAGE,
+            num_faces=1,
+            min_face_detection_confidence=0.5,
+            min_face_presence_confidence=0.5,
             min_tracking_confidence=0.5
         )
+        
+        self.face_landmarker = vision.FaceLandmarker.create_from_options(options)
         
         self.eyes_closed_start_time = None
         self.total_closed_duration = 0.0
@@ -55,14 +73,12 @@ class EyeTracker:
         ear = (vertical1 + vertical2) / (2.0 * horizontal)
         return ear
     
-    def get_eye_landmarks(self, face_landmarks, indices, frame_width, frame_height) -> np.ndarray:
+    def get_eye_landmarks(self, face_landmarks, indices) -> np.ndarray:
         """Extract eye landmark coordinates"""
         landmarks = []
         for idx in indices:
-            landmark = face_landmarks.landmark[idx]
-            x = int(landmark.x * frame_width)
-            y = int(landmark.y * frame_height)
-            landmarks.append([x, y])
+            landmark = face_landmarks[idx]
+            landmarks.append([landmark.x, landmark.y])
         return np.array(landmarks, dtype=np.float32)
     
     def are_eyes_closed(self, frame) -> Tuple[bool, float, float]:
@@ -72,21 +88,20 @@ class EyeTracker:
         Returns:
             Tuple of (eyes_closed, left_ear, right_ear)
         """
-        # Convert BGR to RGB
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Convert frame to MediaPipe Image
+        mp_image = MPImage(image_format=ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         
         # Process the frame
-        results = self.face_mesh.process(rgb_frame)
+        detection_result = self.face_landmarker.detect(mp_image)
         
-        if not results.multi_face_landmarks:
+        if not detection_result.face_landmarks:
             return False, 0.0, 0.0
         
-        face_landmarks = results.multi_face_landmarks[0]
-        h, w = frame.shape[:2]
+        face_landmarks = detection_result.face_landmarks[0]
         
         # Get eye landmarks
-        left_eye = self.get_eye_landmarks(face_landmarks, self.LEFT_EYE_INDICES, w, h)
-        right_eye = self.get_eye_landmarks(face_landmarks, self.RIGHT_EYE_INDICES, w, h)
+        left_eye = self.get_eye_landmarks(face_landmarks, self.LEFT_EYE_INDICES)
+        right_eye = self.get_eye_landmarks(face_landmarks, self.RIGHT_EYE_INDICES)
         
         # Calculate EAR for both eyes
         left_ear = self.calculate_ear(left_eye)
@@ -149,4 +164,4 @@ class EyeTracker:
     
     def cleanup(self):
         """Release resources"""
-        self.face_mesh.close()
+        self.face_landmarker.close()

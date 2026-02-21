@@ -9,6 +9,16 @@ let totalSeconds = 0;
 let tasks = [];
 let currentTaskIndex = 0;
 
+// Load timer settings and update display
+function loadTimerSettings() {
+  const timerSettings = localStorage.getItem('timerSettings');
+  if (timerSettings) {
+    // Parse the work duration from the split (e.g., "25-5" -> 25)
+    const workDuration = parseInt(timerSettings.split('-')[0]);
+    session.textContent = workDuration;
+  }
+}
+
 // Load tasks from localStorage and display current task
 function loadTasks() {
   const savedTasks = localStorage.getItem('studyTasks');
@@ -94,7 +104,8 @@ const updateSeconds = () => {
 
 toggleBtn.addEventListener("click", toggleTimer);
 
-// Load tasks when page loads
+// Load tasks and timer settings when page loads
+loadTimerSettings();
 loadTasks();
 
 async function startEyeTracking() {

@@ -50,7 +50,7 @@ All successfully installed in virtual environment!
 
 1. **Pomodoro page loads** → Frontend calls `POST /api/eye-tracking/start`
 2. **During study session** → Frontend polls `GET /api/eye-tracking/status` every 2-3 seconds
-3. **Eyes closed for 15 seconds** → `alert_triggered` becomes `true` in status response
+3. **Eyes closed for 10 seconds** → `alert_triggered` becomes `true` in status response
 4. **Frontend detects alert** → Shows visual/audio notification
 5. **Session ends** → Frontend calls `POST /api/eye-tracking/stop`
 
@@ -81,14 +81,6 @@ All successfully installed in virtual environment!
 
 ## 🚫 What's NOT Done Yet
 
-### Frontend Integration (For Your Team)
-- [ ] Add JavaScript code to Pomodoro page
-- [ ] Call `/api/eye-tracking/start` when timer starts
-- [ ] Poll `/api/eye-tracking/status` every 2-3 seconds
-- [ ] Check `alert_triggered` field
-- [ ] Create visual alert (modal, animation, etc.)
-- [ ] Create audio alert (sound file)
-- [ ] Call `/api/eye-tracking/stop` when timer stops
 
 ### Alert Implementation
 - [ ] Choose alert sound/music

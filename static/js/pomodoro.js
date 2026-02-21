@@ -1,4 +1,5 @@
-const bells = new Audio("./sounds/bell.wav");
+// Remove or comment out the bell sound for now (file doesn't exist)
+// const bells = new Audio("./sounds/bell.wav");
 const toggleBtn = document.querySelector(".btn-toggle");
 const session = document.querySelector(".minutes");
 const currentTaskText = document.querySelector(".current-task-text");
@@ -48,6 +49,9 @@ const toggleTimer = () => {
     }
     
     myInterval = setInterval(updateSeconds, 1000);
+    
+    // Start eye tracking when timer starts
+    startEyeTracking();
   } else {
     // Pause the timer
     isRunning = false;
@@ -74,11 +78,14 @@ const updateSeconds = () => {
   minuteDiv.textContent = `${minutesLeft}`;
 
   if (minutesLeft === 0 && secondsLeft === 0) {
-    bells.play();
+    // bells.play(); // Commented out - no sound file yet
     clearInterval(myInterval);
     isRunning = false;
     toggleBtn.textContent = "▶";
     toggleBtn.classList.remove("running");
+    
+    // Stop eye tracking when timer ends
+    stopEyeTracking();
     
     // Move to next task when timer completes
     moveToNextTask();
@@ -98,11 +105,17 @@ async function startEyeTracking() {
         const data = await response.json();
         
         if (data.success) {
-            console.log('Eye tracking started!');
+            console.log('✅ Eye tracking started!');
             startStatusPolling(); // Start checking status
+        } else {
+            console.error('❌ Eye tracking failed to start:', data.error);
+            // Show user-friendly message
+            if (data.error && data.error.includes('camera')) {
+                alert('⚠️ Camera access needed!\n\nPlease grant camera permissions in System Preferences > Security & Privacy > Camera');
+            }
         }
     } catch (error) {
-        console.error('Failed to start eye tracking:', error);
+        console.error('❌ Failed to start eye tracking:', error);
     }
 }
 let pollInterval = null;
@@ -134,21 +147,47 @@ async function checkEyeStatus() {
 function triggerWakeUpAlert() {
     console.log('⚠️ WAKE UP! Eyes closed too long!');
     
-    // Option 1: Play a sound
-    const audio = new Audio('/static/audio/alert.mp3'); // Add your sound file
-    audio.play();
+    // Check if alert already exists
+    if (document.getElementById('wake-up-alert')) {
+        return; // Don't create duplicate alerts
+    }
     
-    // Option 2: Show a modal/popup
-    // showAlertModal();
+    // Create small red text at bottom
+    const alertDiv = document.createElement('div');
+    alertDiv.id = 'wake-up-alert';
+    alertDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 10000;
+            text-align: center;
+            font-family: 'Blockblueprint', Arial, sans-serif;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+            cursor: pointer;
+        " onclick="dismissAlert()">
+            ⚠️ Wake up! Your eyes have been closed for too long. Click to dismiss.
+        </div>
+    `;
+    document.body.appendChild(alertDiv);
     
-    // Option 3: Shake the screen
-    // document.body.classList.add('shake');
-    
-    // Option 4: Change background color
-    // document.body.style.backgroundColor = 'red';
-    
-    // You can do ALL of these or pick what works best!
+    // Auto-dismiss after 5 seconds
+    setTimeout(dismissAlert, 5000);
 }
+
+function dismissAlert() {
+    const alert = document.getElementById('wake-up-alert');
+    if (alert) {
+        alert.remove();
+    }
+}
+
 function stopStatusPolling() {
     if (pollInterval) {
         clearInterval(pollInterval);
@@ -171,20 +210,3 @@ async function stopEyeTracking() {
 
 // Also stop when user leaves page
 window.addEventListener('beforeunload', stopEyeTracking);
-// When START button is clicked:
-startButton.addEventListener('click', () => {
-    // Your existing timer start code...
-    startPomodoroTimer();
-    
-    // ADD THIS:
-    startEyeTracking();
-});
-
-// When timer ends or STOP button clicked:
-stopButton.addEventListener('click', () => {
-    // Your existing timer stop code...
-    stopPomodoroTimer();
-    
-    // ADD THIS:
-    stopEyeTracking();
-});

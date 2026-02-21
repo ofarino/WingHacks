@@ -43,11 +43,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100vh;
             color: white;
             text-align: center;
-            padding: 20px;
+            padding-top: 8vh;
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         .content h1 {
@@ -68,21 +70,101 @@
             font-family: 'Blockblueprint', Arial, sans-serif;
             padding: 20px 50px;
             font-size: clamp(1.3rem, 3vw, 1.8rem);
-            background-color: rgba(76, 175, 80, 0.9);
+            background-color: rgba(101, 67, 33, 0.9);
             color: white;
-            border: none;
-            border-radius: 30px;
+            border: 5px solid #4caf50;
+            border-radius: 0;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            bottom: 47vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
         }
 
         .start-btn:hover {
-            background-color: rgba(56, 142, 60, 1);
-            transform: translateY(-2px);
+            background-color: rgba(139, 90, 43, 1);
+            transform: translateX(-50%);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+            opacity: 0.85;
+        }
+
+        .tutorial-btn {
+            font-family: 'Blockblueprint', Arial, sans-serif;
+            padding: 12px 30px;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 3px solid white;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: fixed;
+            bottom: 37vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .tutorial-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: rgba(50, 30, 10, 0.95);
+            border: 4px solid #4caf50;
+            padding: 40px;
+            max-width: 550px;
+            width: 90%;
+            color: white;
+            text-align: left;
+            position: relative;
+        }
+
+        .modal h2 {
+            font-family: 'Blockblueprint', Arial, sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal ol {
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            line-height: 2;
+            padding-left: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* Responsive adjustments */
@@ -124,8 +206,23 @@
 
     <div class="content">
         <h1>MindCraft</h1>
-        <p>Your smart study companion with focus tracking</p>
-        <a href="{{ url_for('tasks') }}" class="start-btn">Start Studying</a>
+        <p>idk yall. Craft your plan. Stay focused.</p>
+    </div>
+    <a href="{{ url_for('tasks') }}" class="start-btn">Join study world!</a>
+    <button class="tutorial-btn" onclick="document.getElementById('tutorialModal').classList.add('active')">Tutorial</button>
+
+    <div class="modal-overlay" id="tutorialModal">
+        <div class="modal">
+            <button class="modal-close" onclick="document.getElementById('tutorialModal').classList.remove('active')">&times;</button>
+            <h2>How to Use MindCraft</h2>
+            <ol>
+                <li>Click <strong>Join study world!</strong> to get started.</li>
+                <li>Add your study tasks with a name, due date, subject, and estimated time.</li>
+                <li>Choose your preferred Pomodoro timer split.</li>
+                <li>Click <strong>Proceed to Study Session</strong> to begin.</li>
+                <li>Stay focused — your camera will track your presence!</li>
+            </ol>
+        </div>
     </div>
 </body>
 </html>

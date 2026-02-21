@@ -125,5 +125,5 @@ function goToNextPage() {
     // Save the final order (including manual drags) to localStorage
     localStorage.setItem('studyTasks', JSON.stringify(tasks));
     localStorage.setItem('timerSettings', selectedSplit);
-    window.location.href = '/pomodoro';
+    window.location.href = '/loading';
 }

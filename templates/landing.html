@@ -145,8 +145,17 @@
         .modal h2 {
             font-family: 'Blockblueprint', Arial, sans-serif;
             font-size: 2rem;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
             text-align: center;
+        }
+
+        .modal .modal-desc {
+            font-family: Arial, sans-serif;
+            font-size: 0.95rem;
+            color: #d4c9a8;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         .modal ol {
@@ -206,7 +215,7 @@
 
     <div class="content">
         <h1>MindCraft</h1>
-        <p>idk yall. Craft your plan. Stay focused.</p>
+        <p>Study smarter. Craft your plan. Stay focused.</p>
     </div>
     <a href="{{ url_for('tasks') }}" class="start-btn">Join study world!</a>
     <button class="tutorial-btn" onclick="document.getElementById('tutorialModal').classList.add('active')">Tutorial</button>
@@ -215,12 +224,13 @@
         <div class="modal">
             <button class="modal-close" onclick="document.getElementById('tutorialModal').classList.remove('active')">&times;</button>
             <h2>How to Use MindCraft</h2>
+            <p class="modal-desc">A personal world crafted to your study needs using a pomodoro style timer and AI detection to pinpoint when you lose focus so your MindCart doesn’t fall too far off the tracks.</p>
             <ol>
                 <li>Click <strong>Join study world!</strong> to get started.</li>
                 <li>Add your study tasks with a name, due date, subject, and estimated time.</li>
                 <li>Choose your preferred Pomodoro timer split.</li>
                 <li>Click <strong>Proceed to Study Session</strong> to begin.</li>
-                <li>Stay focused — your camera will track your presence!</li>
+                <li>The camera will track your focus. Happy studying!</li>
             </ol>
         </div>
     </div>

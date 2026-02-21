@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>idk</title>
+    <title>MindCraft</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         * {
@@ -77,11 +77,11 @@
 </head>
 <body>
     <video id="bg-video" autoplay muted loop playsinline>
-        <source src="{{ url_for('static', filename='videos/landing.mp4') }}" type="video/mp4">
+        <source src="{{ url_for('static', filename='videos/LandingDog.mp4') }}" type="video/mp4">
     </video>
 
     <div class="content">
-        <h1>eyeCuStudy</h1>
+        <h1>MindCraft</h1>
         <p>Your smart study companion with focus tracking</p>
         <a href="{{ url_for('tasks') }}" class="start-btn">Start Studying</a>
     </div>

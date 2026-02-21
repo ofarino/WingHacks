@@ -8,6 +8,7 @@ let isRunning = false;
 let totalSeconds = 0;
 let tasks = [];
 let isBreakTime = false;
+let currentAlertSound = null; // Track the current alert sound
 
 // Load timer settings and update display
 function loadTimerSettings() {
@@ -228,8 +229,8 @@ async function checkEyeStatus() {
         const response = await fetch('/api/eye-tracking/status');
         const data = await response.json();
         
-        // THE IMPORTANT PART! Check if alert should trigger
-        if (data.eyes && data.eyes.alert_triggered) {
+        // THE IMPORTANT PART! Check if alert should trigger (but not during breaks)
+        if (data.eyes && data.eyes.alert_triggered && !isBreakTime) {
             triggerWakeUpAlert(); // YOUR ALERT FUNCTION
         }
         
@@ -250,7 +251,23 @@ function triggerWakeUpAlert() {
         return; // Don't create duplicate alerts
     }
     
-    // Create small red text at bottom
+    // Pause the timer
+    if (isRunning) {
+        clearInterval(myInterval);
+        toggleBtn.textContent = "▶";
+        toggleBtn.classList.remove("running");
+    }
+    
+    // Play alert sound
+    currentAlertSound = new Audio('/static/audio/eyeClosedSound.mp3');
+    currentAlertSound.play().catch(err => console.log('Audio play failed:', err));
+    
+    // Resume timer when sound ends
+    currentAlertSound.addEventListener('ended', () => {
+        resumeTimerAfterAlert();
+    });
+    
+    // Create Minecraft-style notification
     const alertDiv = document.createElement('div');
     alertDiv.id = 'wake-up-alert';
     alertDiv.innerHTML = `
@@ -259,18 +276,19 @@ function triggerWakeUpAlert() {
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #ff4444;
+            background: rgba(0, 0, 0, 0.85);
             color: white;
             padding: 12px 24px;
-            border-radius: 8px;
+            border: 2px solid #555;
             z-index: 10000;
             text-align: center;
             font-family: 'Blockblueprint', Arial, sans-serif;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+            font-size: 1rem;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
             cursor: pointer;
+            image-rendering: pixelated;
         " onclick="dismissAlert()">
-            ⚠️ Wake up! Your eyes have been closed for too long. Click to dismiss.
+            You may not rest now, there's still work to do
         </div>
     `;
     document.body.appendChild(alertDiv);
@@ -283,6 +301,26 @@ function dismissAlert() {
     const alert = document.getElementById('wake-up-alert');
     if (alert) {
         alert.remove();
+    }
+    
+    // Stop the alert sound if it's still playing
+    if (currentAlertSound) {
+        currentAlertSound.pause();
+        currentAlertSound.currentTime = 0;
+        currentAlertSound = null;
+    }
+    
+    // Resume the timer
+    resumeTimerAfterAlert();
+}
+
+function resumeTimerAfterAlert() {
+    // Only resume if timer was running before the alert
+    if (!isRunning && totalSeconds > 0) {
+        isRunning = true;
+        toggleBtn.textContent = "⏸";
+        toggleBtn.classList.add("running");
+        myInterval = setInterval(updateSeconds, 1000);
     }
 }
 

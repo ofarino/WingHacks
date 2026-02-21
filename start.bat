@@ -1,8 +1,8 @@
 @echo off
-REM EyeCu Study - Easy Start Script for Windows
+REM MindCraft - Easy Start Script for Windows
 REM This automatically activates the virtual environment and runs the app
 
-echo Starting EyeCu Study...
+echo Starting MindCraft...
 echo.
 
 REM Check if venv exists

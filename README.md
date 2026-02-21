@@ -54,7 +54,7 @@ http://localhost:5001
 
 ## ✨ Features
 
-- 🍅 **Pomodoro Timer** - 25-minute focused study sessions with break tracking
+- ⏱️ **Pomodoro Timer** - 25-minute focused study sessions with break tracking
 - 📝 **Task Management** - Keep track of your study goals and to-do list
 - 👁️ **Eye Tracking** - Real-time monitoring using your webcam (local processing only!)
 - ⚠️ **Smart Alerts** - Gentle notification when eyes closed for 10+ seconds
@@ -151,6 +151,7 @@ MindCraft features a full authentic Minecraft aesthetic:
 
 - **🔤 Blockblueprint Font** - The official Minecraft font for all text
 - **�️ Pixel Art Backgrounds** - Beautiful bookshelf scene on the tasks page
+- **⛏️Minecart Loading Screen** - Immersive loading experience where you travel into your study session on a minecart
 - **✨ Crisp Rendering** - Perfect pixel art with no anti-aliasing blur
 - **🚨 Subtle Alerts** - Small red text at bottom (not intrusive like a creeper explosion!)
 - **🎨 Consistent Theme** - Every page feels like you're inside Minecraft

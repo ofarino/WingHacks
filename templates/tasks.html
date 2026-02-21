@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Study Task Tracker</h1>
+        <h1>Craft Your Study Schedule</h1>
         
         <div id="input-section">
             <input type="text" id="taskName" placeholder="Task Name (e.g., Calculus Quiz)">
@@ -31,6 +31,16 @@
                 <option value="180">3+ hours</option>
             </select>
             <button id="add-task-btn" onclick="addTask()">Add Task to Schedule</button>
+        </div>
+
+        <div id="timer-settings" style="margin: 20px 0; text-align: center;">
+            <label for="timerSplit" style="font-weight: bold; display: block; margin-bottom: 8px;">Select Your Timer Split:</label>
+            <select id="timerSplit" style="width: 100%; max-width: 400px; border: 2px solid #2c3e50;">
+                <option value="25-5" selected>Classic Pomodoro (25 min Work / 5 min Break)</option>
+                <option value="45-15">Flexible (45 min Work / 15 min Break)</option>
+                <option value="50-10">Deep Learning (50 min Work / 10 min Break)</option>
+                <option value="90-30">Ultradian Rhythm (90 min Work / 30 min Break)</option>
+            </select>
         </div>
 
         <hr>

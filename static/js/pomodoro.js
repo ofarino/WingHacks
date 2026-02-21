@@ -7,7 +7,6 @@ let myInterval;
 let isRunning = false;
 let totalSeconds = 0;
 let tasks = [];
-let currentTaskIndex = 0;
 
 // Load timer settings and update display
 function loadTimerSettings() {
@@ -31,18 +30,37 @@ function loadTasks() {
 }
 
 function displayCurrentTask() {
-  if (tasks.length > 0 && currentTaskIndex < tasks.length) {
-    const task = tasks[currentTaskIndex];
+  const taskCompleteBox = document.querySelector('.task-complete-box');
+  const taskCheckbox = document.getElementById('taskCheckbox');
+  
+  if (tasks.length > 0) {
+    // Always use the first task (index 0) since we shift completed tasks
+    const task = tasks[0];
     currentTaskText.textContent = `Current task: ${task.name}`;
+    
+    // Show checkbox and reset it
+    if (taskCompleteBox) {
+      taskCompleteBox.style.display = 'block';
+      if (taskCheckbox) {
+        taskCheckbox.checked = false;
+      }
+    }
   } else {
     currentTaskText.textContent = "Current task: All tasks completed!";
+    
+    // Hide checkbox if no tasks
+    if (taskCompleteBox) {
+      taskCompleteBox.style.display = 'none';
+    }
   }
 }
 
 function moveToNextTask() {
-  currentTaskIndex++;
-  tasks.shift(); // Remove the completed task
+  // Remove the completed task from the front of the array
+  tasks.shift();
+  // Update localStorage with remaining tasks
   localStorage.setItem('studyTasks', JSON.stringify(tasks));
+  // Display the next task (now at index 0)
   displayCurrentTask();
 }
 
@@ -107,6 +125,21 @@ toggleBtn.addEventListener("click", toggleTimer);
 // Load tasks and timer settings when page loads
 loadTimerSettings();
 loadTasks();
+
+// Handle task completion checkbox
+document.addEventListener('DOMContentLoaded', function() {
+  const taskCheckbox = document.getElementById('taskCheckbox');
+  if (taskCheckbox) {
+    taskCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        // Small delay for visual feedback
+        setTimeout(() => {
+          moveToNextTask();
+        }, 300);
+      }
+    });
+  }
+});
 
 async function startEyeTracking() {
     try {

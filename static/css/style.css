@@ -139,7 +139,7 @@ button#add-task-btn:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 75vh;
     text-align: center;
 }
 
@@ -156,7 +156,7 @@ button#add-task-btn:hover {
 }
 
 .app-counter-box {
-    margin: 40px 0;
+    margin: 40px 0 20px 0;
 }
 
 .app-counter-box p {
@@ -171,32 +171,43 @@ button#add-task-btn:hover {
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-top: 30px;
+    margin: 0;
 }
 
-.btn-start, .btn-stop {
-    padding: 15px 40px;
-    font-size: 1.5rem;
+.btn-toggle {
+    padding: 15px;
+    font-size: 2rem;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.3s;
+    transition: all 0.3s;
+    background-color: #5d5d5d;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    line-height: 1;
 }
 
-.btn-start {
-    background-color: #28a745;
+.btn-toggle:hover {
+    background-color: #5d5d5d;
 }
 
-.btn-start:hover {
-    background-color: #218838;
+.btn-toggle.running {
+    background-color: #5d5d5d;
 }
 
-.btn-stop {
-    background-color: #dc3545;
+.btn-toggle.running:hover {
+    background-color: #5d5d5d;
 }
 
-.btn-stop:hover {
-    background-color: #c82333;
+.current-task-text {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
 }

@@ -1,4 +1,18 @@
+/* Custom Font */
+@font-face {
+    font-family: 'Blockblueprint';
+    src: url('../fonts/Blockblueprint-LV7z5.ttf') format('truetype');
+}
+
 /* 1. General Page Layout */
+:root {
+    box-sizing: border-box;
+   --primary-color--: #2ecc71;
+   --light-blue--: #3498db;
+   --dark-blue--: #2c3e50;
+   font-family: 'main', fonts;
+}
+
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     padding: 20px; 

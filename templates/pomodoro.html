@@ -17,15 +17,15 @@
     <nav class="pomodoro-navbar">
       <div class="navbar-content">
         <button class="nav-btn" onclick="openTimerModal()" title="Edit timer settings">
-          <span class="nav-icon">⚙️</span>
+          <img src="{{ url_for('static', filename='backgrounds/MinecraftClock.png') }}" alt="Clock" class="nav-icon-img">
           <span class="nav-label">Edit Timer</span>
         </button>
         <button class="nav-btn" onclick="toggleVibeMenu()" title="Change background vibe">
-          <span class="nav-icon">🎨</span>
+          <img src="{{ url_for('static', filename='backgrounds/Thepotion.png') }}" alt="Potion" class="nav-icon-img">
           <span class="nav-label">Change Vibe</span>
         </button>
         <button class="nav-btn" onclick="window.location.href='/tasks'" title="Recraft your assignments">
-          <span class="nav-icon">📝</span>
+          <img src="{{ url_for('static', filename='backgrounds/CraftingTable.png') }}" alt="Crafting Table" class="nav-icon-img">
           <span class="nav-label">Recraft Tasks</span>
         </button>
       </div>

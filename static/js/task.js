@@ -25,15 +25,9 @@ function addTask() {
     const date = dateInput.value;
     const topic = topicInput.value;
     const time = parseInt(timeInput.value);
-    const todayString = new Date().toISOString().split('T')[0];
-
-    if (date < todayString) {
-        alert("Due date cannot be in the past.");
-        return;
-    }
 
     // Validation
-    if (!name || !date || isNaN(time)) {
+    if (!name || !date || !topic || isNaN(time)) {
         alert("Please fill in all fields correctly.");
         return;
     }
@@ -56,6 +50,12 @@ function addTask() {
     // Clear inputs for the next entry
     nameInput.value = '';
     dateInput.value = '';
+    if (dateInput.type === 'date') dateInput.type = 'text';
+    dateInput.classList.add('placeholder');
+    topicInput.value = '';
+    topicInput.classList.add('placeholder');
+    timeInput.value = '';
+    timeInput.classList.add('placeholder');
 
 }
 
@@ -75,7 +75,7 @@ function renderTasks() {
         item.innerHTML = `
             <div>
                 <strong>${task.name}</strong> <small>(${task.topic})</small><br>
-                <span>📅 ${task.date} | ⏳ ${task.time} mins</span>
+                <span>${task.date} | ⏳ ${task.time} mins</span>
             </div>
             <button onclick="deleteTask(${index})" style="color:red; border:none; background:none; cursor:pointer;">✖</button>
         `;

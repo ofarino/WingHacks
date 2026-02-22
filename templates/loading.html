@@ -31,7 +31,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Blockblueprint', Arial, sans-serif;
-            font-size: 3rem;
+            font-size: 4rem;
             color: #3b2a1a;
             text-shadow: 2px 2px 0px #a07850;
             white-space: nowrap;
@@ -55,7 +55,7 @@
     </style>
 </head>
 <body>
-    <div id="loading-text">Crafting your schedule...</div>
+    <div id="loading-text">Matching study vibes...</div>
 
     <video id="loading-video" autoplay muted playsinline>
         <source src="{{ url_for('static', filename='backgrounds/MinecartLoading.mp4') }}" type="video/mp4">
@@ -63,10 +63,12 @@
 
     <script>
         const video = document.getElementById('loading-video');
+        const text = document.getElementById('loading-text');
         let plays = 0;
         video.addEventListener('ended', () => {
             plays++;
             if (plays < 2) {
+                text.textContent = 'Generating your world...';
                 video.play();
             } else {
                 window.location.href = '/pomodoro';

@@ -22,6 +22,23 @@
             image-rendering: crisp-edges;
             z-index: -1;
         }
+
+        #topic.placeholder {
+            color: #999;
+        }
+
+        #expectedTime.placeholder {
+            color: #999;
+        }
+
+        #dueDate.placeholder {
+            color: #999;
+        }
+
+        #input-section input::placeholder {
+            color: #999;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -29,9 +46,14 @@
         <h1>Craft Your Study Schedule</h1>
         
         <div id="input-section">
-            <input type="text" id="taskName" placeholder="Task Name (e.g., Calculus Quiz)">
-            <input type="date" id="dueDate">
+            <input type="text" id="taskName" placeholder="Task Name (e.g., Physics Homework)">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <input type="text" id="dueDate" placeholder="Due Date"
+                    onfocus="this.type='date'"
+                    onblur="if(!this.value) this.type='text'">
+            </div>
             <select id="topic">
+                <option value="" disabled selected>Subject</option>
                 <option value="Math">Math</option>
                 <option value="Science">Science</option>
                 <option value="Reading">Reading</option>
@@ -53,9 +75,9 @@
         </div>
 
         <div id="timer-settings" style="margin: 20px 0; text-align: center;">
-            <label for="timerSplit" style="font-weight: bold; display: block; margin-bottom: 8px;">Select Your Timer Split:</label>
+            <label for="timerSplit" style="font-weight: bold; display: block; margin-bottom: 8px; font-size: 1.4rem;">Select Your Timer Split:</label>
             <select id="timerSplit" style="width: 100%; max-width: 400px; border: 2px solid #2c3e50;">
-                <option value="1-0.25">🧪 Test Timer (1 min Work / 15 sec Break)</option>
+                <option value="1-0.25">Demo (1 min Work / 15 sec Break)</option>
                 <option value="25-5" selected>Classic Pomodoro (25 min Work / 5 min Break)</option>
                 <option value="45-15">Flexible (45 min Work / 15 min Break)</option>
                 <option value="50-10">Deep Learning (50 min Work / 10 min Break)</option>
@@ -77,5 +99,27 @@
     </div>
 
 <script src="{{ url_for('static', filename='js/task.js') }}"></script>
+<script>
+    const topicSelect = document.getElementById('topic');
+    topicSelect.classList.add('placeholder');
+    topicSelect.addEventListener('change', () => {
+        topicSelect.classList.toggle('placeholder', topicSelect.value === '');
+    });
+
+    const timeSelect = document.getElementById('expectedTime');
+    timeSelect.classList.add('placeholder');
+    timeSelect.addEventListener('change', () => {
+        timeSelect.classList.toggle('placeholder', timeSelect.value === '');
+    });
+
+    const dateInput = document.getElementById('dueDate');
+    dateInput.classList.add('placeholder');
+    dateInput.addEventListener('change', () => {
+        dateInput.classList.toggle('placeholder', dateInput.value === '');
+    });
+    dateInput.addEventListener('input', () => {
+        dateInput.classList.toggle('placeholder', dateInput.value === '');
+    });
+</script>
 </body>
 </html>

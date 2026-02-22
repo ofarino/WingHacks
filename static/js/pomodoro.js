@@ -26,7 +26,6 @@ function loadTasks() {
   if (savedTasks) {
     tasks = JSON.parse(savedTasks);
     displayCurrentTask();
-    setBackgroundBySubject(tasks);
   } else {
     currentTaskText.textContent = "Current task: No tasks available";
   }
@@ -35,20 +34,28 @@ function loadTasks() {
 // Map subject to background video
 const subjectVideos = {
   'Math': 'math.mp4',
+  'Science': 'science.mp4',
+  'Reading': 'reading.mp4',
+  'Writing': 'writing.mp4',
+  'History': 'history.mp4',
+  'Coding': 'coding.mp4',
+  'Art': 'art.mp4',
+  'Other': 'other.mp4',
 };
 
 function setBackgroundBySubject(tasks) {
   if (!tasks || tasks.length === 0) return;
-  // Count subject frequencies
-  const counts = {};
-  tasks.forEach(t => { counts[t.topic] = (counts[t.topic] || 0) + 1; });
-  const topSubject = Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
-  const videoFile = subjectVideos[topSubject];
+  // Use the current (first) task's subject
+  const currentSubject = tasks[0].topic;
+  const videoFile = subjectVideos[currentSubject];
+  const bgVideo = document.getElementById('bg-video');
   if (videoFile) {
-    const bgVideo = document.getElementById('bg-video');
     bgVideo.src = `/static/backgrounds/${videoFile}`;
     bgVideo.load();
     bgVideo.play();
+  } else {
+    bgVideo.src = '';
+    bgVideo.load();
   }
 }
 
@@ -60,6 +67,7 @@ function displayCurrentTask() {
     // Always use the first task (index 0) since we shift completed tasks
     const task = tasks[0];
     currentTaskText.textContent = `Current task: ${task.name}`;
+    setBackgroundBySubject(tasks);
     
     // Show checkbox only during work time (not during break)
     if (taskCompleteBox && !isBreakTime) {
@@ -373,7 +381,14 @@ window.addEventListener('beforeunload', stopEyeTracking);
 
 // Vibe menu functionality (placeholder for future implementation)
 function toggleVibeMenu() {
-    alert('Vibe customization coming soon! 🎨\n\nFuture features:\n- Background themes\n- Ambient sounds\n- Color schemes');
+    const vibeVideos = ['random1.mp4', 'random2.mp4', 'random3.mp4'];
+    const bgVideo = document.getElementById('bg-video');
+    const current = bgVideo.src.split('/').pop();
+    const choices = vibeVideos.filter(v => v !== current);
+    const pick = choices[Math.floor(Math.random() * choices.length)];
+    bgVideo.src = `/static/backgrounds/${pick}`;
+    bgVideo.load();
+    bgVideo.play();
 }
 
 // Timer modal functions

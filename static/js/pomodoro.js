@@ -9,6 +9,7 @@ let totalSeconds = 0;
 let tasks = [];
 let isBreakTime = false;
 let currentAlertSound = null; // Track the current alert sound
+let currentBgMusic = null; // Track background music
 
 // Load timer settings and update display
 function loadTimerSettings() {
@@ -43,6 +44,38 @@ const subjectVideos = {
   'Other': 'other.mp4',
 };
 
+// Map subject to background music
+const subjectAudio = {
+  'Math': 'math.mp3',
+  'Science': 'science.mp3',
+  'Reading': 'read.mp3',
+  'Writing': 'writing1.mp3',
+  'History': 'history.mp3',
+  'Coding': 'coding.mp3',
+  'Art': 'Arty.mp3',
+};
+const otherAudioOptions = ['math.mp3', 'science.mp3', 'read.mp3', 'writing1.mp3', 'history.mp3', 'coding.mp3', 'Arty.mp3'];
+
+function playBgMusic(file) {
+  if (currentBgMusic) {
+    currentBgMusic.pause();
+    currentBgMusic = null;
+  }
+  if (!file) return;
+  currentBgMusic = new Audio(`/static/audio/${file}`);
+  currentBgMusic.loop = true;
+  currentBgMusic.volume = 0.5;
+  currentBgMusic.play().catch(err => console.log('Music play failed:', err));
+}
+
+function setMusicBySubject(subject) {
+  let file = subjectAudio[subject];
+  if (subject === 'Other') {
+    file = otherAudioOptions[Math.floor(Math.random() * otherAudioOptions.length)];
+  }
+  playBgMusic(file || null);
+}
+
 function setBackgroundBySubject(tasks) {
   if (!tasks || tasks.length === 0) return;
   // Use the current (first) task's subject
@@ -68,6 +101,7 @@ function displayCurrentTask() {
     const task = tasks[0];
     currentTaskText.textContent = `Current task: ${task.name}`;
     setBackgroundBySubject(tasks);
+    setMusicBySubject(task.topic);
     
     // Show checkbox only during work time (not during break)
     if (taskCompleteBox && !isBreakTime) {
@@ -196,6 +230,7 @@ function updateSessionMode() {
     if (taskCompleteBox) {
       taskCompleteBox.style.display = 'none';
     }
+    playBgMusic('break.mp3');
   } else {
     sessionModeElement.textContent = 'Work Time';
     sessionModeElement.style.color = '#fff';
@@ -204,6 +239,7 @@ function updateSessionMode() {
     if (taskCompleteBox && tasks.length > 0) {
       taskCompleteBox.style.display = 'block';
     }
+    if (tasks.length > 0) setMusicBySubject(tasks[0].topic);
   }
 }
 
@@ -381,14 +417,21 @@ window.addEventListener('beforeunload', stopEyeTracking);
 
 // Vibe menu functionality (placeholder for future implementation)
 function toggleVibeMenu() {
-    const vibeVideos = ['random1.mp4', 'random2.mp4', 'random3.mp4'];
+    const allVideos = ['art.mp4', 'coding.mp4', 'history.mp4', 'math.mp4', 'other.mp4', 'random1.mp4', 'random2.mp4', 'random3.mp4', 'reading.mp4', 'science.mp4', 'writing.mp4'];
+    const allAudio = ['math.mp3', 'science.mp3', 'read.mp3', 'writing1.mp3', 'history.mp3', 'coding.mp3', 'Arty.mp3'];
+
     const bgVideo = document.getElementById('bg-video');
-    const current = bgVideo.src.split('/').pop();
-    const choices = vibeVideos.filter(v => v !== current);
-    const pick = choices[Math.floor(Math.random() * choices.length)];
-    bgVideo.src = `/static/backgrounds/${pick}`;
+    const currentVideo = bgVideo.src.split('/').pop();
+    const videoChoices = allVideos.filter(v => v !== currentVideo);
+    const pickedVideo = videoChoices[Math.floor(Math.random() * videoChoices.length)];
+    bgVideo.src = `/static/backgrounds/${pickedVideo}`;
     bgVideo.load();
     bgVideo.play();
+
+    const currentAudioFile = currentBgMusic ? currentBgMusic.src.split('/').pop() : null;
+    const audioChoices = allAudio.filter(a => a !== currentAudioFile);
+    const pickedAudio = audioChoices[Math.floor(Math.random() * audioChoices.length)];
+    playBgMusic(pickedAudio);
 }
 
 // Timer modal functions

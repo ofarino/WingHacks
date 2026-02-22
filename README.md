@@ -490,7 +490,9 @@ Want to contribute? Here are some features we're considering:
 5. Close your eyes and count to 10...
 6. 🔴 Red alert appears at bottom: *"⚠️ Wake up! Your eyes have been closed for too long."*
 7. Click the alert or wait 5 seconds for it to auto-dismiss
-8. Continue studying!
+8. Try out open hand for pause and thumbs up for play
+9. Need a quick break but forget to stop your timer during a study session, stepping away pauses it for you
+10. Continue studying!
 
 ---
 
@@ -500,9 +502,11 @@ Found a bug or have an idea? Open an issue or submit a pull request!
 
 ---
 
-## 📄 License
+## 📄 License and External Sources
 
 Open source for educational purposes. MediaPipe is licensed by Google under Apache 2.0.
+Backgrounds for the loading page and pomodoro sessions found at https://wallsflow.com/tags/minecraft/
+Audio generated from ElevenLabs. 
 
 ---
 

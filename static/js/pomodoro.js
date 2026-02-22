@@ -318,11 +318,14 @@ async function checkEyeStatus() {
                 showGestureAlert('⏸️ Paused with hand gesture');
             }
             
-            // Thumbs Up = Resume (if timer is paused)
-            if (gesture === 'thumbs_up' && !isRunning && totalSeconds > 0 && !isBreakTime) {
-                console.log('👍 Thumbs up detected - Resuming timer');
+            // Closed Fist = Resume (if timer is paused)
+            console.log(`Fist check: gesture=${gesture}, isRunning=${isRunning}, totalSeconds=${totalSeconds}, isBreakTime=${isBreakTime}`);
+            if (gesture === 'fist' && !isRunning && totalSeconds > 0 && !isBreakTime) {
+                console.log('✊ Closed fist detected - Resuming timer');
                 resumeTimerFromGesture();
                 showGestureAlert('▶️ Resumed with hand gesture');
+            } else if (gesture === 'fist') {
+                console.log(`❌ Fist detected but conditions not met: isRunning=${isRunning}, totalSeconds=${totalSeconds}, isBreakTime=${isBreakTime}`);
             }
         }
         
@@ -455,11 +458,16 @@ function pauseTimerFromGesture() {
 }
 
 function resumeTimerFromGesture() {
+    console.log(`🔍 resumeTimerFromGesture called: isRunning=${isRunning}, totalSeconds=${totalSeconds}`);
     if (!isRunning && totalSeconds > 0) {
+        console.log('✅ Resuming timer...');
         isRunning = true;
         toggleBtn.textContent = "⏸";
         toggleBtn.classList.add("running");
         myInterval = setInterval(updateSeconds, 1000);
+        console.log('✅ Timer resumed successfully');
+    } else {
+        console.log(`❌ Cannot resume: isRunning=${isRunning}, totalSeconds=${totalSeconds}`);
     }
 }
 

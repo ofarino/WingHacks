@@ -57,7 +57,7 @@ http://localhost:5001
 - ⏱️ **Pomodoro Timer** - Focused study sessions with break tracking
 - 📝 **Task Management** - Keep track of your study goals and to-do list
 - 👁️ **Eye Tracking** - Real-time monitoring using your webcam (local processing only!)
-- ✋ **Hand Gesture Controls** - Pause with open palm, resume with thumbs up
+- ✋ **Hand Gesture Controls** - Pause with open palm, resume with closed fist
 - 🚶 **Presence Detection** - Auto-pause when you leave, resume when you return
 - ⚠️ **Smart Alerts** - Gentle notification when eyes closed for 10+ seconds
 - 🎮 **Minecraft Theme** - Full pixel art backgrounds and authentic Blockblueprint font
@@ -72,7 +72,7 @@ http://localhost:5001
 2. **Start the Timer** - Go to the Pomodoro page and click the play button ▶
 3. **Position Yourself** - Make sure your face is visible to the webcam in good lighting
 4. **Study!** - The timer counts down while eye tracking monitors you every 2 seconds
-5. **Hand Gestures** - ✋ Show open palm to pause, 👍 show thumbs up to resume
+5. **Hand Gestures** - ✋ Show open palm to pause, ✊ close your fist to resume
 6. **Stay Present** - Timer auto-pauses if you leave the camera view
 7. **Stay Awake** - If your eyes are closed for 10+ seconds, you'll get a Minecraft-style alert
 8. **Dismiss & Continue** - Click any alert to dismiss and keep studying

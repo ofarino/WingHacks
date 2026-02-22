@@ -1,6 +1,6 @@
 """
 Hand gesture detection using MediaPipe Hands.
-Detects open palm and thumbs up gestures.
+Detects open palm and closed fist gestures.
 Uses MediaPipe 0.10+ task-based API.
 """
 
@@ -20,7 +20,7 @@ except ImportError as e:
 
 
 class HandGestureDetector:
-    """Detects hand gestures (open palm, thumbs up) using MediaPipe Hands."""
+    """Detects hand gestures (open palm, closed fist) using MediaPipe Hands."""
     
     def __init__(self):
         """Initialize MediaPipe Hand Landmarker."""
@@ -60,7 +60,7 @@ class HandGestureDetector:
             frame: Input BGR image from webcam
             
         Returns:
-            gesture_name: 'open_palm', 'thumbs_up', or None
+            gesture_name: 'open_palm', 'fist', or None
         """
         if frame is None or self.detector is None:
             return None
@@ -97,7 +97,7 @@ class HandGestureDetector:
             hand_landmarks: List of MediaPipe hand landmarks
             
         Returns:
-            'open_palm', 'thumbs_up', or None
+            'open_palm', 'fist', or None
         """
         # hand_landmarks is a list of NormalizedLandmark objects
         # Each has .x, .y, .z properties
@@ -129,10 +129,10 @@ class HandGestureDetector:
         if all(fingers_extended):
             return 'open_palm'
         
-        # Detect Thumbs Up: Only thumb extended, others curled
-        # More lenient: thumb extended and at least 3 other fingers curled
-        if fingers_extended[0] and sum(fingers_extended[1:]) <= 1:
-            return 'thumbs_up'
+        # Detect Fist: All fingers curled (none extended)
+        # Allow up to 1 finger slightly extended for more lenient detection
+        if sum(fingers_extended) <= 1:
+            return 'fist'
         
         return None
     

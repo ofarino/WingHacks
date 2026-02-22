@@ -26,8 +26,29 @@ function loadTasks() {
   if (savedTasks) {
     tasks = JSON.parse(savedTasks);
     displayCurrentTask();
+    setBackgroundBySubject(tasks);
   } else {
     currentTaskText.textContent = "Current task: No tasks available";
+  }
+}
+
+// Map subject to background video
+const subjectVideos = {
+  'Math': 'math.mp4',
+};
+
+function setBackgroundBySubject(tasks) {
+  if (!tasks || tasks.length === 0) return;
+  // Count subject frequencies
+  const counts = {};
+  tasks.forEach(t => { counts[t.topic] = (counts[t.topic] || 0) + 1; });
+  const topSubject = Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
+  const videoFile = subjectVideos[topSubject];
+  if (videoFile) {
+    const bgVideo = document.getElementById('bg-video');
+    bgVideo.src = `/static/backgrounds/${videoFile}`;
+    bgVideo.load();
+    bgVideo.play();
   }
 }
 
@@ -157,17 +178,20 @@ const updateSeconds = () => {
 function updateSessionMode() {
   const sessionModeElement = document.querySelector('.session-mode');
   const taskCompleteBox = document.querySelector('.task-complete-box');
+  const brownOutline = '-2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A';
   
   if (isBreakTime) {
     sessionModeElement.textContent = 'Break Time';
-    sessionModeElement.style.color = '#2c3e50';
+    sessionModeElement.style.color = '#fff';
+    sessionModeElement.style.textShadow = brownOutline;
     // Hide task checkbox during break
     if (taskCompleteBox) {
       taskCompleteBox.style.display = 'none';
     }
   } else {
     sessionModeElement.textContent = 'Work Time';
-    sessionModeElement.style.color = '#2c3e50';
+    sessionModeElement.style.color = '#fff';
+    sessionModeElement.style.textShadow = brownOutline;
     // Show task checkbox during work (if tasks exist)
     if (taskCompleteBox && tasks.length > 0) {
       taskCompleteBox.style.display = 'block';
@@ -288,7 +312,7 @@ function triggerWakeUpAlert() {
             cursor: pointer;
             image-rendering: pixelated;
         " onclick="dismissAlert()">
-            You may not rest now, there's still work to do
+            You may not rest now, there's still work to do!
         </div>
     `;
     document.body.appendChild(alertDiv);

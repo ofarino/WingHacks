@@ -147,7 +147,13 @@ button#add-task-btn:hover {
 .app-container h1 {
     font-size: 5rem;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #fff;
+    text-shadow: -2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A;
+}
+
+.session-mode {
+    color: #fff !important;
+    text-shadow: -2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A;
 }
 
 .app-message {
@@ -164,9 +170,9 @@ button#add-task-btn:hover {
     font-size: 12rem;
     font-weight: bold;
     margin: 0;
-    color: #2c3e50;
+    color: #fff;
     font-family: var(--main-font--);
-
+    text-shadow: -2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A;
 }
 
 
@@ -211,8 +217,14 @@ button#add-task-btn:hover {
 .current-task-text {
     margin-top: 30px;
     margin-bottom: 0;
-    color: #2c3e50;
+    color: #fff;
     font-size: 2rem;
+    text-shadow: -2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A;
+}
+
+.task-complete-box label, .task-complete-box span {
+    color: #fff;
+    text-shadow: -2px -2px 0 #6B3A2A, 2px -2px 0 #6B3A2A, -2px 2px 0 #6B3A2A, 2px 2px 0 #6B3A2A;
 }
 
 /* Pomodoro Navigation Bar */

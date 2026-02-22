@@ -8,8 +8,23 @@ window.onload = function() {
 
     const formattedDate = yyyy + '-' + mm + '-' + dd;
     dateInput.setAttribute('min', formattedDate);
+    
+    // Load existing tasks from localStorage
+    loadExistingTasks();
 };
+
 let tasks = [];
+
+/**
+ * Load existing tasks from localStorage and display them
+ */
+function loadExistingTasks() {
+    const savedTasks = localStorage.getItem('studyTasks');
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+        renderTasks();
+    }
+}
 
 /**
  * 1. Capture user input, add to the array, and sort.
@@ -106,6 +121,33 @@ function setupDragAndDrop() {
             container.insertBefore(dragging, afterElement);
         }
     });
+    
+    // Save reordered tasks after drag ends
+    container.addEventListener('drop', () => {
+        setTimeout(() => {
+            syncTasksFromDOM();
+        }, 100);
+    });
+}
+
+/**
+ * Sync tasks array with the DOM order after drag-and-drop
+ */
+function syncTasksFromDOM() {
+    const taskElements = document.querySelectorAll('.task-item');
+    const reorderedTasks = [];
+    
+    taskElements.forEach(element => {
+        const taskName = element.querySelector('strong').textContent;
+        const task = tasks.find(t => t.name === taskName);
+        if (task) {
+            reorderedTasks.push(task);
+        }
+    });
+    
+    tasks = reorderedTasks;
+    // Save to localStorage
+    localStorage.setItem('studyTasks', JSON.stringify(tasks));
 }
 
 function getDragAfterElement(container, y) {
@@ -128,6 +170,8 @@ function getDragAfterElement(container, y) {
 function deleteTask(index) {
     tasks.splice(index, 1);
     renderTasks();
+    // Save updated tasks to localStorage
+    localStorage.setItem('studyTasks', JSON.stringify(tasks));
 }
 
 

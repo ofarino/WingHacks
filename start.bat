@@ -29,7 +29,12 @@ if errorlevel 1 (
 
 REM Check if models are downloaded
 if not exist "vision\models\face_landmarker.task" (
-    echo Eye tracking models not found.
+    echo Models not found.
+    echo Downloading eye tracking and gesture detection models...
+    python setup_models.py
+    echo.
+) else if not exist "vision\models\hand_landmarker.task" (
+    echo Hand gesture model not found.
     echo Downloading models...
     python setup_models.py
     echo.

@@ -26,9 +26,9 @@ if ! python3 -c "import flask" 2>/dev/null; then
 fi
 
 # Check if models are downloaded
-if [ ! -f "vision/models/face_landmarker.task" ]; then
-    echo "⚠️  Eye tracking models not found."
-    echo "Downloading models..."
+if [ ! -f "vision/models/face_landmarker.task" ] || [ ! -f "vision/models/hand_landmarker.task" ]; then
+    echo "⚠️  Models not found."
+    echo "Downloading eye tracking and gesture detection models..."
     python3 setup_models.py
     echo ""
 fi

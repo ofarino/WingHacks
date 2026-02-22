@@ -9,6 +9,7 @@ import time
 from typing import Optional
 from .eyes import EyeTracker
 from .presence import PresenceDetector
+from .hands import HandGestureDetector
 
 
 class VideoStream:
@@ -36,11 +37,15 @@ class VideoStream:
         # Initialize trackers
         self.eye_tracker = EyeTracker()
         self.presence_detector = PresenceDetector()
+        self.hand_detector = HandGestureDetector()
         
         # Tracking state
         self.eyes_closed_duration = 0.0
         self.alert_triggered = False
         self.is_present = False
+        self.current_gesture = None
+        self.last_gesture_time = 0
+        self.gesture_cooldown = 1.5  # 1.5 second cooldown between gestures
         
     def start(self):
         """Start the video stream"""
@@ -154,9 +159,52 @@ class VideoStream:
         
         return {
             'success': True,
-            'present': bool(is_present),  # Convert to Python bool
-            'confidence': float(round(confidence, 3)) if confidence else None,  # Convert to Python float
-            'time_since_last_detection': float(round(time_since_last, 2)) if time_since_last else None  # Convert to Python float
+            'present': bool(is_present),
+            'confidence': float(round(confidence, 3)) if confidence else None,
+            'time_since_last_detection': float(round(time_since_last, 2)) if time_since_last else None
+        }
+    
+    def process_frame_for_hands(self) -> dict:
+        """
+        Process current frame for hand gesture detection
+        
+        Returns:
+            Dictionary with gesture results
+        """
+        with self.lock:
+            if self.frame is None:
+                return {
+                    'success': False,
+                    'error': 'No frame available'
+                }
+            
+            frame = self.frame.copy()
+        
+        # Detect gesture
+        gesture = self.hand_detector.detect_gesture(frame)
+        
+        current_time = time.time()
+        gesture_detected = None
+        
+        # Debug logging
+        if gesture:
+            print(f"🖐️ Raw gesture detected: {gesture}")
+        
+        # Only register gesture if cooldown has passed
+        if gesture and (current_time - self.last_gesture_time) > self.gesture_cooldown:
+            gesture_detected = gesture
+            self.current_gesture = gesture
+            self.last_gesture_time = current_time
+            print(f"✅ Gesture registered (after cooldown): {gesture}")
+        elif gesture:
+            time_left = self.gesture_cooldown - (current_time - self.last_gesture_time)
+            print(f"⏳ Gesture in cooldown, {time_left:.1f}s remaining")
+        
+        return {
+            'success': True,
+            'gesture': gesture_detected,
+            'last_gesture': self.current_gesture,
+            'timestamp': float(current_time)
         }
     
     def get_status(self) -> dict:
@@ -188,10 +236,22 @@ class VideoStream:
                 'error': str(e)
             }
         
+        try:
+            gesture_data = self.process_frame_for_hands()
+        except Exception as e:
+            print(f"Error in process_frame_for_hands: {e}")
+            import traceback
+            traceback.print_exc()
+            gesture_data = {
+                'success': False,
+                'error': str(e)
+            }
+        
         return {
             'camera_active': self.is_running,
             'eyes': eye_data,
-            'presence': presence_data
+            'presence': presence_data,
+            'gesture': gesture_data
         }
     
     def reset_tracking(self):
@@ -214,6 +274,7 @@ class VideoStream:
         # Cleanup trackers
         self.eye_tracker.cleanup()
         self.presence_detector.cleanup()
+        self.hand_detector.release()
 
 
 # Global video stream instance (singleton pattern)

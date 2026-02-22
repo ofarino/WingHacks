@@ -23,6 +23,11 @@ MODELS = {
         'url': 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
         'filename': 'face_detector.tflite',
         'description': 'Face Detector (for presence detection)'
+    },
+    'hand_landmarker': {
+        'url': 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+        'filename': 'hand_landmarker.task',
+        'description': 'Hand Landmarker (for gesture detection)'
     }
 }
 
@@ -89,7 +94,7 @@ def download_model(name, info):
 
 def main():
     print("=" * 60)
-    print("EyeCu Study - MediaPipe Models Setup")
+    print("MindCraft - MediaPipe Models Setup")
     print("=" * 60)
     print(f"\nModels directory: {MODELS_DIR}\n")
     

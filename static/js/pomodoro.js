@@ -10,6 +10,8 @@ let tasks = [];
 let isBreakTime = false;
 let currentAlertSound = null; // Track the current alert sound
 let currentBgMusic = null; // Track background music
+let lastPresenceStatus = true; // Track if user was present
+let presenceAlertShown = false; // Track if presence alert is showing
 
 // Load timer settings and update display
 function loadTimerSettings() {
@@ -297,9 +299,59 @@ async function checkEyeStatus() {
         const response = await fetch('/api/eye-tracking/status');
         const data = await response.json();
         
-        // THE IMPORTANT PART! Check if alert should trigger (but not during breaks)
-        if (data.eyes && data.eyes.alert_triggered && !isBreakTime) {
-            triggerWakeUpAlert(); // YOUR ALERT FUNCTION
+        if (!data || !data.camera_active) return;
+        
+        // Debug: Log gesture data
+        if (data.gesture) {
+            console.log('Gesture data:', data.gesture);
+        }
+        
+        // 1. Handle Hand Gestures (only during work time)
+        if (data.gesture && data.gesture.success && data.gesture.gesture) {
+            const gesture = data.gesture.gesture;
+            console.log('🖐️ Gesture detected in frontend:', gesture);
+            
+            // Open Palm = Pause (if timer is running)
+            if (gesture === 'open_palm' && isRunning && !isBreakTime) {
+                console.log('✋ Open palm detected - Pausing timer');
+                pauseTimerFromGesture();
+                showGestureAlert('⏸️ Paused with hand gesture');
+            }
+            
+            // Thumbs Up = Resume (if timer is paused)
+            if (gesture === 'thumbs_up' && !isRunning && totalSeconds > 0 && !isBreakTime) {
+                console.log('👍 Thumbs up detected - Resuming timer');
+                resumeTimerFromGesture();
+                showGestureAlert('▶️ Resumed with hand gesture');
+            }
+        }
+        
+        // 2. Handle Presence Detection (only during work time)
+        if (data.presence && data.presence.success && !isBreakTime) {
+            const isPresent = data.presence.present;
+            
+            // Debug logging
+            if (presenceAlertShown) {
+                console.log(`👤 Presence status: ${isPresent ? 'PRESENT' : 'AWAY'} | Alert shown: ${presenceAlertShown}`);
+            }
+            
+            // User left (was present, now not present)
+            if (lastPresenceStatus && !isPresent && isRunning && !presenceAlertShown) {
+                console.log('❌ User left - Pausing timer and showing alert');
+                pauseTimerFromGesture();
+                showPresenceAlert();
+                presenceAlertShown = true;
+            }
+            
+            // IMPORTANT: Do NOT dismiss alert automatically when user returns
+            // The alert must be manually dismissed by clicking the X button
+            
+            lastPresenceStatus = isPresent;
+        }
+        
+        // 3. Handle Eye Closure (only during work time and when present)
+        if (data.eyes && data.eyes.alert_triggered && !isBreakTime && lastPresenceStatus) {
+            triggerWakeUpAlert();
         }
         
         // Optional: Show duration on screen
@@ -308,7 +360,7 @@ async function checkEyeStatus() {
         }
         
     } catch (error) {
-        console.error('Failed to check eye status:', error);
+        console.error('❌ Failed to check eye status:', error);
     }
 }
 function triggerWakeUpAlert() {
@@ -389,6 +441,176 @@ function resumeTimerAfterAlert() {
         toggleBtn.textContent = "⏸";
         toggleBtn.classList.add("running");
         myInterval = setInterval(updateSeconds, 1000);
+    }
+}
+
+// Helper functions for gesture control
+function pauseTimerFromGesture() {
+    if (isRunning) {
+        clearInterval(myInterval);
+        isRunning = false;
+        toggleBtn.textContent = "▶";
+        toggleBtn.classList.remove("running");
+    }
+}
+
+function resumeTimerFromGesture() {
+    if (!isRunning && totalSeconds > 0) {
+        isRunning = true;
+        toggleBtn.textContent = "⏸";
+        toggleBtn.classList.add("running");
+        myInterval = setInterval(updateSeconds, 1000);
+    }
+}
+
+function showGestureNotification(message) {
+    // Remove existing notification if present
+    const existing = document.getElementById('gesture-notification');
+    if (existing) {
+        existing.remove();
+    }
+    
+    // Create new notification
+    const notification = document.createElement('div');
+    notification.id = 'gesture-notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(46, 204, 113, 0.95);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-family: var(--main-font--);
+        font-size: 1rem;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: slideInRight 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        if (notification && notification.parentNode) {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 3000);
+}
+
+function showGestureAlert(message) {
+    // Remove existing alert if present
+    const existing = document.getElementById('gesture-alert');
+    if (existing) {
+        existing.remove();
+    }
+    
+    // Create Minecraft-style gesture alert
+    const alert = document.createElement('div');
+    alert.id = 'gesture-alert';
+    alert.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 12px 24px;
+        border: 2px solid #555;
+        font-family: 'Blockblueprint', Arial, sans-serif;
+        font-size: 1rem;
+        text-align: center;
+        z-index: 10000;
+        image-rendering: pixelated;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        animation: fadeInUp 0.3s ease-out;
+        max-width: 90%;
+        width: auto;
+    `;
+    alert.textContent = message;
+    document.body.appendChild(alert);
+    
+    // Auto-hide after 2 seconds
+    setTimeout(() => {
+        if (alert && alert.parentNode) {
+            alert.style.animation = 'fadeOutDown 0.3s ease-out';
+            setTimeout(() => alert.remove(), 300);
+        }
+    }, 2000);
+}
+
+function showPresenceAlert() {
+    // Remove existing alert if present
+    const existing = document.getElementById('presence-alert');
+    if (existing) {
+        return;
+    }
+    
+    const alert = document.createElement('div');
+    alert.id = 'presence-alert';
+    alert.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 20px 30px 20px 20px;
+        border: 2px solid #555;
+        font-family: 'Blockblueprint', Arial, sans-serif;
+        font-size: 1rem;
+        text-align: center;
+        z-index: 10000;
+        image-rendering: pixelated;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        animation: fadeInUp 0.4s ease-out;
+        max-width: 90%;
+        width: auto;
+        min-width: 300px;
+    `;
+    
+    alert.innerHTML = `
+        <button id="presence-alert-close-btn" style="
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            font-weight: bold;
+        ">&times;</button>
+        <div style="padding-right: 20px;">
+            Pausing the timer. Please resume timer when you come back to keep mining away at your tasks!
+        </div>
+    `;
+    
+    // Add click handler to X button
+    document.body.appendChild(alert);
+    const closeBtn = document.getElementById('presence-alert-close-btn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', dismissPresenceAlertAndResume);
+    }
+}
+
+function dismissPresenceAlertAndResume() {
+    dismissPresenceAlert();
+    resumeTimerFromGesture();
+    presenceAlertShown = false; // Reset so it can trigger again if user leaves
+}
+
+function dismissPresenceAlert() {
+    const alert = document.getElementById('presence-alert');
+    if (alert) {
+        alert.style.animation = 'fadeOutDown 0.3s ease-out';
+        setTimeout(() => alert.remove(), 300);
     }
 }
 
@@ -491,3 +713,52 @@ document.addEventListener('click', function(event) {
         closeTimerModal();
     }
 });
+
+// Add CSS animations for notifications
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+    
+    @keyframes fadeOutDown {
+        from {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+    }
+`;
+document.head.appendChild(style);

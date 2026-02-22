@@ -221,7 +221,7 @@ button#add-task-btn:hover {
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(44, 62, 80, 0.95);
+    background: rgba(60, 60, 60, 0.25);
     backdrop-filter: blur(10px);
     padding: 12px 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -240,8 +240,10 @@ button#add-task-btn:hover {
 .nav-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 10px 20px;
+    min-width: 160px;
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -269,8 +271,27 @@ button#add-task-btn:hover {
     line-height: 1;
 }
 
+.nav-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.nav-icon-large {
+    width: 60px;
+    height: 60px;
+}
+
+.nav-icon-small {
+    width: 36px;
+    height: 36px;
+}
+
 .nav-label {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
 }
 
 /* Adjust app container for navbar */
